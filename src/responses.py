@@ -14,6 +14,9 @@ async def bard_handle_response(message, client) -> str:
     responseMessage = response["content"]
     return responseMessage
 
+async def official_net_handle_response(message, client) -> str:
+    return await sync_to_async(client.chatbot.ask)(message)
+
 # resets conversation and asks chatGPT the prompt for a persona
 async def switch_persona(persona, client) -> None:
     if client.chat_model ==  "UNOFFICIAL":
@@ -24,5 +27,8 @@ async def switch_persona(persona, client) -> None:
         client.chatbot.reset()
         await sync_to_async(client.chatbot.ask)(personas.PERSONAS.get(persona))
     elif client.chat_model == "Bard":
+        client.chatbot = client.get_chatbot_model()
+        await sync_to_async(client.chatbot.ask)(personas.PERSONAS.get(persona))
+    else:
         client.chatbot = client.get_chatbot_model()
         await sync_to_async(client.chatbot.ask)(personas.PERSONAS.get(persona))

@@ -1,7 +1,7 @@
 import os
 import discord
 from typing import Union
-from src import log, responses
+from src import log, responses, chatbot
 from dotenv import load_dotenv
 from discord import app_commands
 from Bard import Chatbot as BardChatbot
@@ -38,6 +38,8 @@ class aclient(discord.Client):
             return Chatbot(api_key=self.openAI_API_key, engine=self.openAI_gpt_engine, proxy=os.getenv("HTTP_PROXY"))
         elif self.chat_model == "Bard":
             return BardChatbot(session_id=self.bard_session_id)
+        elif self.chat_model == "netchat":
+            return chatbot.LangChainChat()
 
     async def send_message(self, message, user_message):
         if self.is_replying_all == "False":
@@ -52,6 +54,8 @@ class aclient(discord.Client):
             elif self.chat_model == "UNOFFICIAL":
                 response = f"{response}{await responses.unofficial_handle_response(user_message, self)}"
             elif self.chat_model == "Bard":
+                response = f"{response}{await responses.bard_handle_response(user_message, self)}"
+            elif self.chat_model == "netchat":
                 response = f"{response}{await responses.bard_handle_response(user_message, self)}"
             char_limit = 1900
             if len(response) > char_limit:
