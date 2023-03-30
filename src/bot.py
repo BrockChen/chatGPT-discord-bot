@@ -82,6 +82,7 @@ def run_discord_bot():
         app_commands.Choice(name="Website ChatGPT-3.5", value="UNOFFICIAL"),
         app_commands.Choice(name="Website ChatGPT-4.0", value="UNOFFICIAL-GPT4"),
         app_commands.Choice(name="Bard", value="Bard"),
+        app_commands.Choice(name="netchat", value="netchat"),
     ])
 
     async def chat_model(interaction: discord.Interaction, choices: app_commands.Choice[str]):
@@ -104,6 +105,8 @@ def run_discord_bot():
                 client.chat_model = "UNOFFICIAL"
             elif choices.value == "Bard":
                 client.chat_model = "Bard"
+            elif choices.value == "netchat":
+                client.chat_model = "netchat"
             else:
                 raise ValueError("Invalid choice")
 
@@ -121,7 +124,7 @@ def run_discord_bot():
 
     @client.tree.command(name="reset", description="Complete reset conversation history")
     async def reset(interaction: discord.Interaction):
-        if client.chat_model == "OFFICIAL":
+        if client.chat_model in ["netchat","OFFICIAL"]:
             client.chatbot.reset()
         elif client.chat_model == "UNOFFICIAL":
             client.chatbot.reset_chat()
@@ -157,6 +160,7 @@ def run_discord_bot():
                 `OFFICIAL`: GPT-3.5 model
                 `UNOFFICIAL`: Website ChatGPT
                 `Bard`: Google Bard model
+                `netchat`: Chat with internet
 
 For complete documentation, please visit:
 https://github.com/Zero6992/chatGPT-discord-bot""")
@@ -228,7 +232,7 @@ https://github.com/Zero6992/chatGPT-discord-bot""")
             await interaction.followup.send(f"> **WARN: Already set to `{persona}` persona**")
 
         elif persona == "standard":
-            if client.chat_model == "OFFICIAL":
+            if client.chat_model in ["OFFICIAL", "netchat"]:
                 client.chatbot.reset()
             elif client.chat_model == "UNOFFICIAL":
                 client.chatbot.reset_chat()

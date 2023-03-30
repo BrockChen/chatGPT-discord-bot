@@ -39,7 +39,7 @@ class aclient(discord.Client):
         elif self.chat_model == "Bard":
             return BardChatbot(session_id=self.bard_session_id)
         elif self.chat_model == "netchat":
-            return chatbot.LangChainChat()
+            return chatbot.LangChainChat(engine=self.openAI_gpt_engine)
 
     async def send_message(self, message, user_message):
         if self.is_replying_all == "False":
@@ -126,7 +126,7 @@ class aclient(discord.Client):
                     if (discord_channel_id):
                         logger.info(f"Send starting prompt with size {len(prompt)}")
                         response = ""
-                        if self.chat_model == "OFFICIAL":
+                        if self.chat_model in ["OFFICIAL", "netchat"]:
                             response = f"{response}{await responses.official_handle_response(prompt, self)}"
                         elif self.chat_model == "UNOFFICIAL":
                             response = f"{response}{await responses.unofficial_handle_response(prompt, self)}"

@@ -29,6 +29,6 @@ async def switch_persona(persona, client) -> None:
     elif client.chat_model == "Bard":
         client.chatbot = client.get_chatbot_model()
         await sync_to_async(client.chatbot.ask)(personas.PERSONAS.get(persona))
-    else:
+    elif client.chat_model == "netchat":
         client.chatbot = client.get_chatbot_model()
         await sync_to_async(client.chatbot.ask)(personas.PERSONAS.get(persona))
